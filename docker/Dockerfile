@@ -41,10 +41,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         gettext \
         liblttng-ust0 \
         libcurl4-openssl-dev \
-        gnupg-agent \
-        docker-ce \
-        docker-ce-cli \
-        containerd.io
+        gnupg-agent
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
