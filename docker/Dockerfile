@@ -25,11 +25,6 @@ LABEL maintainer="rainman0215@gmail.com" \
     org.label-schema.vcs-url="https://github.com/rainchei/docker-github-runner" \
     org.label-schema.docker.cmd="docker run -it rainchei/github-runner:latest"
 
-# Install Docker
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian \
-        $(lsb_release -cs) \
-        stable"
-
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
@@ -77,6 +72,16 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && rm -rf /tmp/* \
     && apt-get clean
 
+# Install Docker
+RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian \
+        $(lsb_release -cs) \
+        stable"
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y \
+        docker-ce \
+        docker-ce-cli \
+        containerd.io
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
