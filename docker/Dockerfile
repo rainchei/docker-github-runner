@@ -71,9 +71,7 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
 
 # Install Docker
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian \
-        $(lsb_release -cs) \
-        stable"
+RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         docker-ce \
