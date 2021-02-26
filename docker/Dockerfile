@@ -15,15 +15,15 @@ ENV GITHUB_ACCESS_TOKEN=""
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 
 # Labels.
-LABEL maintainer="rainman0215@gmail.com" \
+LABEL maintainer="rainchei.lin@gmail.com" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.vcs-ref=$VCS_REF \
-    org.label-schema.name="rainchei/github-runner" \
+    org.label-schema.name="rainchei/docker-github-runner" \
     org.label-schema.description="Dockerized GitHub Actions runner." \
     org.label-schema.url="https://github.com/rainchei/docker-github-runner" \
     org.label-schema.vcs-url="https://github.com/rainchei/docker-github-runner" \
-    org.label-schema.docker.cmd="docker run -it rainchei/github-runner:latest"
+    org.label-schema.docker.cmd="docker run -it rainchei/docker-github-runner:latest"
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
