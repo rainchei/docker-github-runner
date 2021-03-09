@@ -77,6 +77,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         docker-ce \
         docker-ce-cli \
+        docker-compose \
         containerd.io
 
 COPY entrypoint.sh /entrypoint.sh
