@@ -3,6 +3,7 @@ FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
+ARG COMPOSE_VERSION="1.28.5"
 ARG GH_RUNNER_VERSION
 
 ENV RUNNER_NAME=""
@@ -25,8 +26,8 @@ LABEL maintainer="rainchei.lin@gmail.com" \
     org.label-schema.vcs-url="https://github.com/rainchei/docker-github-runner" \
     org.label-schema.docker.cmd="docker run -it rainchei/docker-github-runner:latest"
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && apt-get install -y \
         curl \
         apt-transport-https \
         ca-certificates \
@@ -47,13 +48,14 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
-RUN cd /tmp && \
-    curl -sL https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz -o git.tgz && \
-    tar zxf git.tgz  && \
-    cd git-${GIT_VERSION}  && \
-    ./configure --prefix=/usr  && \
-    make  && \
-    make install
+# Install Git
+RUN cd /tmp \
+    && curl -sL https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz -o git.tgz \
+    && tar zxf git.tgz \
+    && cd git-${GIT_VERSION} \
+    && ./configure --prefix=/usr \
+    && make \
+    && make install
 
 RUN mkdir -p /home/runner ${AGENT_TOOLSDIRECTORY}
 
@@ -73,12 +75,15 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
 # Install Docker
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
 RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && apt-get install -y \
         docker-ce \
         docker-ce-cli \
-        docker-compose \
         containerd.io
+
+# Install Docker Compose
+RUN sudo curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+    && sudo chmod +x /usr/local/bin/docker-compose
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
