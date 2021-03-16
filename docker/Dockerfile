@@ -1,4 +1,4 @@
-ARG FROM=debian:buster-slim
+ARG FROM=ubuntu:trusty
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -26,7 +26,7 @@ LABEL maintainer="rainchei.lin@gmail.com" \
     org.label-schema.vcs-url="https://github.com/rainchei/docker-github-runner" \
     org.label-schema.docker.cmd="docker run -it rainchei/docker-github-runner:latest"
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+RUN DEBIAN_FRONTEND=${DEBIAN_FRONTEND} apt-get update \
     && apt-get install -y \
         curl \
         apt-transport-https \
@@ -72,18 +72,19 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && rm -rf /tmp/* \
     && apt-get clean
 
-# Install Docker
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
-    && apt-get install -y \
-        docker-ce \
-        docker-ce-cli \
-        containerd.io
+## # Install Docker
+## https://docs.docker.com/engine/install/ubuntu/
+## RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+## RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
+## RUN DEBIAN_FRONTEND=${DEBIAN_FRONTEND} apt-get update \
+##     && apt-get install -y \
+##         docker-ce \
+##         docker-ce-cli \
+##         containerd.io
 
-# Install Docker Compose
-RUN sudo curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
-    && sudo chmod +x /usr/local/bin/docker-compose
+## # Install Docker Compose
+## RUN sudo curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+##     && sudo chmod +x /usr/local/bin/docker-compose
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
